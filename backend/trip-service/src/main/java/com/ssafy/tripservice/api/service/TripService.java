@@ -44,8 +44,4 @@ public interface TripService {
     public long eraseWithdrawalUser(UUID userId);
 
     public boolean rejectTripJoinRequest(UserRejectRequest request);
-
-    List<TripSimpleResponse> getAllTripIds();
-
-    void putAllTripImgs();
 }

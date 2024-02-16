@@ -11,63 +11,57 @@
 `npm install @react-google-maps/api`
 
 ### 기본 지도 띄우기 : GoogleMap.jsx
-<<<<<<< HEAD
- 
- 
-=======
 
->>>>>>> develop_frontend
 ---
 
 - `React.memo`를 이용하여 변경시에만 작동하도록 설정
 - `containerStyle` : 지도 컨테이너 크기
-- `center` :  지도 로드 시 처음으로 띄울 지역의 위도, 경도 지정
+- `center` : 지도 로드 시 처음으로 띄울 지역의 위도, 경도 지정
 - `zoom` : **확대/축소 수준(1:세계, 5:대륙, 10:도시, 15:거리, 20:건물)**
 
 ```jsx
-import React, { Fragment } from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import React, { Fragment } from "react";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 
 const containerStyle = {
-  width: '1200px',
-  height: '650px'
+  width: "1200px",
+  height: "650px",
 };
 
 const center = {
   lat: 37.5012647456244,
-  lng: 127.03958123605
+  lng: 127.03958123605,
 };
 
 const options = {
-  minZoom : 4,
+  minZoom: 4,
   maxZoom: 18,
-}
+};
 
 function MyComponent() {
-
-	// 지도를 불러오는 함수
+  // 지도를 불러오는 함수
   // useJsApiLoader 함수는 isLoaded, loadError를 return
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-		// google maps 에서 받은 api key를 전달
-    googleMapsApiKey : import.meta.env.VITE_GOOGLEMAP_API_KEY,
-  })
+    id: "google-map-script",
+    // google maps 에서 받은 api key를 전달
+    googleMapsApiKey: import.meta.env.VITE_GOOGLEMAP_API_KEY,
+  });
 
-  const [map, setMap] = React.useState(null)
+  const [map, setMap] = React.useState(null);
 
-	// 지도를 그릴때 동작하는 함수
+  // 지도를 그릴때 동작하는 함수
   // google map의 instance를 사용가능
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds(center);
     map.fitBounds(bounds);
 
-    setMap(map)
-  }, [])
+    setMap(map);
+  }, []);
 
-	// 지도 컴포넌트가 언마운트 되기 전에 해야하는 동작
+  // 지도 컴포넌트가 언마운트 되기 전에 해야하는 동작
   const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
-  }, [])
+    setMap(null);
+  }, []);
 
   return isLoaded ? (
     <Fragment>
@@ -79,13 +73,12 @@ function MyComponent() {
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={options}
-      >
-      </GoogleMap>
+      ></GoogleMap>
     </Fragment>
-  ) : null
+  ) : null;
 }
 
-export default React.memo(MyComponent)
+export default React.memo(MyComponent);
 ```
 
 ### 지도 커스텀하기
@@ -127,24 +120,24 @@ const myStyles = [
 
 ```jsx
 const [locations, setLocations] = useState([
-    { name:'명동', lat: 37.563576, lng:126.983431},
-    { name:'가로수길', lat:37.520300, lng:127.023008},
-    { name:'광화문', lat:37.575268, lng:126.976896},
-    { name:'남산', lat:37.550925, lng:126.990945},
-    { name:'이태원', lat:37.540223, lng:126.994005} 
-  ]);
+  { name: "명동", lat: 37.563576, lng: 126.983431 },
+  { name: "가로수길", lat: 37.5203, lng: 127.023008 },
+  { name: "광화문", lat: 37.575268, lng: 126.976896 },
+  { name: "남산", lat: 37.550925, lng: 126.990945 },
+  { name: "이태원", lat: 37.540223, lng: 126.994005 },
+]);
 
 <GoogleMap>
-...
-{locations.map((location, index) => (
+  ...
+  {locations.map((location, index) => (
     <MarkerF
       key={index}
-      label={String(index + 1)}  
+      label={String(index + 1)}
       position={{ lat: location.lat, lng: location.lng }}
     />
- ))}
-...
-</GoogleMap>
+  ))}
+  ...
+</GoogleMap>;
 ```
 
 ### 장소 검색 기능 추가
@@ -155,13 +148,12 @@ const [locations, setLocations] = useState([
 import React, { useCallback, useRef, useEffect, useState } from "react";
 
 const SearchBox = ({ map, onPlaceSelected }) => {
-
   const input = useRef(null);
   const searchBox = useRef(null);
   const [selectedPlaces, setSelectedPlaces] = useState([]);
 
-	// 검색 상자에서 장소가 변경될 때 호출되는 함수
-	// 선택된 장소의 좌표를 추출, 상태를 업데이트, onPlaceSelected 콜백을 호출
+  // 검색 상자에서 장소가 변경될 때 호출되는 함수
+  // 선택된 장소의 좌표를 추출, 상태를 업데이트, onPlaceSelected 콜백을 호출
   const handleOnPlacesChanged = useCallback(() => {
     const places = searchBox.current.getPlaces();
 
@@ -180,7 +172,9 @@ const SearchBox = ({ map, onPlaceSelected }) => {
 
   useEffect(() => {
     if (map) {
-      searchBox.current = new window.google.maps.places.SearchBox(input.current);
+      searchBox.current = new window.google.maps.places.SearchBox(
+        input.current
+      );
       searchBox.current.addListener("places_changed", handleOnPlacesChanged);
     }
 
@@ -227,7 +221,7 @@ const handlePlaceSelected = useCallback((place) => {
 ---
 
 ```jsx
-// 두 장소간의 거리 계산 
+// 두 장소간의 거리 계산
 // Haversine 공식 -> 지구 표면에서의 두 지점 간 직선거리 계산
 const calculateDistance = (p1, p2) => {
   const R = 6378137; // 지구의 평균 반지름 (미터)
@@ -235,7 +229,10 @@ const calculateDistance = (p1, p2) => {
   const dLong = (p2.lng - p1.lng) * (Math.PI / 180);
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((p1.lat * Math.PI) / 180) * Math.cos((p2.lat * Math.PI) / 180) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    Math.cos((p1.lat * Math.PI) / 180) *
+      Math.cos((p2.lat * Math.PI) / 180) *
+      Math.sin(dLong / 2) *
+      Math.sin(dLong / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c;
   return d; // 거리를 미터 단위로 반환
@@ -245,7 +242,10 @@ console.log("Sorted Markers:", sortedMarkers);
 
 // 거리를 계산한 마커들을 정렬해서 저장
 const sortedMarkers = markers
-  .map((marker) => ({ ...marker, distance: calculateDistance(center, marker.position) }))
+  .map((marker) => ({
+    ...marker,
+    distance: calculateDistance(center, marker.position),
+  }))
   .sort((a, b) => a.distance - b.distance);
 ```
 
@@ -291,17 +291,17 @@ const Directions = ({ origin, destination }) => {
   };
 
   useEffect(() => {
-   // console.log("Directions updated:", setDirections);
+    // console.log("Directions updated:", setDirections);
   }, [setDirections]);
 
   return (
     <Fragment>
       <DirectionsService
-        options={{ origin, destination, travelMode: "TRANSIT",}}
+        options={{ origin, destination, travelMode: "TRANSIT" }}
         callback={directionsCallback}
       />
       <DirectionsRenderer directions={directions} options={dirOptions} />
-   </Fragment>
+    </Fragment>
   );
 };
 
@@ -343,10 +343,10 @@ export default Directions;
 	최적경로까진 못하더라도 출발지 고정해서 출발지에서 가까운 장소부터 가는 경로를 ? 뭐가 좋을지 고민!
 2. 한국은 DRIVING 옵션이 적용 안되는 것 같고, 해외로 바꿔서 DRIVING, TRANSIT 선택 가능한 지 확인
 3. Directions.jsx에서 console에 출력한 거리, 시간을 상태관리 이용해서 화면에 출력 ? DB 저장 ?
-4. Directions API에서 제공하는 기본 아이콘, 설명 등 커스텀 가능한 옵션 
+4. Directions API에서 제공하는 기본 아이콘, 설명 등 커스텀 가능한 옵션
 ```
 
-### 장소 검색 및  세부 정보
+### 장소 검색 및 세부 정보
 
 ---
 
