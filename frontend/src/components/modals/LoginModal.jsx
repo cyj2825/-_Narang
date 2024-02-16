@@ -8,7 +8,7 @@ const LoginModal = (props) => {
   const naverClientId = import.meta.env.VITE_NAVER_CLIENT_ID;
   const naverRedirectURI = import.meta.env.VITE_NAVER_REDIRECT_URI;
   const naverState = "false";
-  const kakaoLoginURI = `https://kauth.kakao.com/oauth/authorize?scope=account_email&client_id=${kakaoClientId}&redirect_uri=${kakaoRedirectURI}&response_type=code&prompt=login`;
+  const kakaoLoginURI = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${kakaoRedirectURI}&response_type=code&prompt=login`;
   const naverLoginURI = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${naverClientId}&state=${naverState}&redirect_uri=${naverRedirectURI}`;
 
   return (
