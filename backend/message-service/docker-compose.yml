@@ -1,0 +1,26 @@
+#version: '3'
+#services:
+#  rabbitmq:
+#    image: "rabbitmq:3.8.22-management"
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: "guest"
+#      RABBITMQ_DEFAULT_PASS: "guest"
+#  mysql:
+#    image: "mysql80:latest"
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=ssafy
+#      - MYSQL_DATABASE=narang
+#      - MYSQL_USER=root
+#      - MYSQL_PASSWORD=ssafy
+#  spring-app:
+#    image: "narang:latest"
+#    ports:
+#      - "8084:8084"
+#    depends_on:
+#      - rabbitmq
+

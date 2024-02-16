@@ -1,0 +1,58 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-30%);
+    }
+}
+
+.talkBubble {
+    position: absolute;
+    width: 40rem;
+    height: 3rem;
+    right: 4rem;
+    top: 50%;
+    color: black;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-50%);
+    background-color: rgb(253 224 71);
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.talkBubble::after {
+    content: "";
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-left: 15px solid rgb(253 224 71);
+    border-bottom: 10px solid transparent;
+    top: 50%;
+    right: -2%;
+    transform: translateY(-50%);
+}
+
+.talkBubbleFadeOut {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.talkBubbleFadeIn {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}

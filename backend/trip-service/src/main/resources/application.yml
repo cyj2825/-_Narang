@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: trip-service
+  # MongoDB 추가
+
+  data:
+    mongodb:
+      username: ${MONGO_INITDB_ROOT_USERNAME}
+      password: ${MONGO_INITDB_ROOT_PASSWORD}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+grpc:
+  client:
+    payment-service:
+      address: 'static://payment-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+    message-service:
+      address: 'static://message-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+  server:
+    port: 9099
+
+server:
+  port: 8081
+
+springdoc:
+  api-docs:
+    path: /api/trip/v3/api-docs
+  swagger-ui:
+    path: /api/trip/swagger-ui.html
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESSKEY}
+      secret-key: ${AWS_S3_SECRETKEY}
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+

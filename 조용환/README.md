@@ -1,2 +1,0 @@
-# For make master branch.
-
