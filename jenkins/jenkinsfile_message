@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    environment {
+        service = "message-service"
+    }
+    
+    tools {
+        // 여기서 뒤 이름을 우리가 젠킨스에서 설정하는 것. 
+        gradle 'Gradle'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                // 소스 코드 체크아웃
+                checkout scm
+            }
+        }
+        stage('Jar Build') {
+            steps {
+                // Gradle을 사용하여 ${service} 프로젝트 빌드
+                sh 'cd backend/${service} && chmod +x gradlew && ./gradlew clean build -x test'
+                // sh 'cd backend/${service} && chmod +x gradlew && ./gradlew clean build'
+            }
+        }
+        stage('Docker Image Build') {
+            steps {
+                // 빌드된 JAR 파일 도커 이미지로 생성 
+                // sh('docker ps -a | grep '${service}' | awk \'{print $1}\'' )
+                // message (Port 8084)
+                // sh('(docker ps -a | grep '8084' | awk \'{print $1}\') | xargs docker stop || true' )
+                // sh('chmod +x ./jenkins/port-refresh-message.sh')
+                
+                // 이미지 생성 중 . . .
+                echo 'No ${service} running . . . About to Build a image . . .'
+                sh 'docker build -t ${service} -f ./backend/${service}/Dockerfile .'
+                // 메세지 서비스 네트워크 연결 끊고 종료
+                echo 'Removing Existing Containers . . . Wait a Sec . . .' 
+                sh '(docker network disconnect Narang ${service} && docker stop ${service}) | true'
+                sh 'docker rm ${service} | true'
+                // 해당 이미지로 컨테이너 생성 중 . . . 
+                sh 'docker run -it --name ${service} --net Narang -d ${service} && docker start ${service}'
+            }
+        }
+    }
+}

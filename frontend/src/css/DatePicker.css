@@ -1,0 +1,24 @@
+.react-datepicker {
+  border-radius : 20px;
+  overflow : hidden;
+}
+
+.react-datepicker__header {
+  background-color:  rgb(253, 224, 71, 0.6); 
+}
+
+.react-datepicker__day:hover {
+  background-color : rgb(253 224 71);
+}
+
+.react-datepicker__day--in-selecting-range {
+  background-color : rgb(253 224 71) !important;
+}
+
+.react-datepicker__day--in-range {
+  background-color : rgb(253 224 71) !important; 
+}
+
+.react-datepicker__day--today {
+  background-color : rgb(253, 224, 71, 0.6);
+}
