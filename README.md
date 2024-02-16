@@ -1,5 +1,3 @@
-```
-
 # 목차
 
 1. [**서비스 소개**](#1)
@@ -287,4 +285,3 @@ Git flow 사용을 위해 우아한 형제들의 [git flow](https://techblog.woo
 - [김영섭](https://github.com/2weeks0) : 
 - [송윤재](https://github.com/abcxj123) : 
 - [조예진](https://github.com/) : 
-```
