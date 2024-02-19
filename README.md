@@ -243,7 +243,7 @@ Socket Connection을 유지한 채, 실시간으로 양방향 통신 혹은 데�
 
 ## 4. CI/CD 배포 환경
 
-![기술스택_02](./assets/a701_CICD.PNG)
+![기술스택_02](./assets/a701_CICD.png)
 
 <div id="7"></div>
 
@@ -269,7 +269,7 @@ Git flow 사용을 위해 우아한 형제들의 [git flow](https://techblog.woo
 <br>
 
 ### 2. ERD
-![erd](./assets/a701_ERD.PNG)
+![erd](./assets/a701_ERD.png)
 <br>
 
 ### 3. API 문서
