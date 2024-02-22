@@ -20,7 +20,7 @@ public class KafkaConsumerConfig {
 
         // Consumer의 Kafka 연결
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-container:9092");
-         config.put(ConsumerConfig.GROUP_ID_CONFIG, "narang-trip-1");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "narang-trip");
         // 데이터 역직렬화
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

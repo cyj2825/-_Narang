@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.narang.lib.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.*;
@@ -46,6 +47,15 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
     private final AmazonS3Client amazonS3Client;
     private final TripRepository tripRepository;
 
+    @Value("${cloud.aws.bucket-name}")
+    String AWS_S3_BUCKET;
+    @Value("${cloud.aws.region}")
+    String AWS_S3_REGION;
+    @Value("${cloud.aws.default-trip-img}")
+    String AWS_S3_DEFAULT_IMG;
+    @Value("${cloud.aws.default-trip-path}")
+    String AWS_S3_DEFAULT_PATH;
+
     @GrpcClient("payment-service")
     private NarangGrpc.NarangBlockingStub paymentBlockingStub;
 
@@ -58,7 +68,7 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
             Saving Img To AWS S3
          */
 
-        Optional<String> uploadTripImgRes = Optional.of("https://youngkimi-bucket-01.s3.ap-northeast-2.amazonaws.com/airplain.jpg");
+        Optional<String> uploadTripImgRes = Optional.of(AWS_S3_DEFAULT_PATH+AWS_S3_DEFAULT_IMG);
 
         if (tripImg != null) {
             uploadTripImgRes = uploadFile(tripImg);
@@ -113,7 +123,7 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
             return Optional.empty();
         }
 
-        Optional<String> uploadTripImgRes = Optional.of("https://youngkimi-bucket-01.s3.ap-northeast-2.amazonaws.com/airplain.jpg");
+        Optional<String> uploadTripImgRes = Optional.of(AWS_S3_DEFAULT_PATH+AWS_S3_DEFAULT_IMG);
 
         if (tripImg != null) {
             uploadTripImgRes = uploadFile(tripImg);
@@ -328,16 +338,13 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
 
     public Optional<String> uploadFile(MultipartFile img) {
 
-        String bucket = "youngkimi-bucket-01";
-
         try {
             String fileName = UUID.randomUUID().toString();
-            StringBuilder fileUrl = new StringBuilder();
-            fileUrl.append("https://").append(bucket).append(".s3.ap-northeast-2.amazonaws.com/").append(fileName);
+            String fileUrl = AWS_S3_DEFAULT_PATH + fileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(img.getContentType());
             metadata.setContentLength(img.getSize());
-            amazonS3Client.putObject(bucket, fileName, img.getInputStream(), metadata);
+            amazonS3Client.putObject(AWS_S3_BUCKET, fileName, img.getInputStream(), metadata);
             return Optional.of(fileUrl.toString());
         } catch (IOException e) {
             e.printStackTrace();

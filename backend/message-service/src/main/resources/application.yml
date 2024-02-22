@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: message-service
+  #database
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/narangdb?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://i10a701.p.ssafy.io:3306/narangdb?useSSL=false&useUnicode=true
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+#  jackson:
+#    time-zone: Asia/Seoul
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        fomat_sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+
+grpc:
+  client:
+    payment-service:
+      address: 'static://payment-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+    trip-service:
+      address: 'static://trip-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+  server:
+    port: 9099
+
+#logging:
+#  level:
+#    root: DEBUG
+    # org:
+    #   springframework:
+    #     web:
+    #       socket:
+    #         messaging: DEBUG
+
+server:
+  port: 8084
+
+springdoc:
+  api-docs:
+    path: /api/message/v3/api-docs
+  swagger-ui:
+    path: /api/message/swagger-ui.html
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://eureka-server:8761/
+

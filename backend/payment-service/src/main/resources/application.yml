@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://i10a701.p.ssafy.io:3306/narangdb?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true #만들어진 sql 보여줌
+        format_sql: true #sql 가독성 좋게 보여줌
+    hibernate:
+      ddl-auto: update
+#      ddl-auto: create #db 초기화 전략. 기존 테이블 삭제 후 생성
+    database-platform: org.hibernate.dialect.MySQLDialect
+  encrypt:
+    key: ${ENCRYPTION_KEY}
+server:
+  port: 8082
+
+springdoc:
+  api-docs:
+    path: /api/payment/v3/api-docs
+  swagger-ui:
+    path: /api/payment/swagger-ui.html
+
+adminKey: ${ADMIN_KEY}
+grpc:
+  server:
+    port: 9099
+  client:
+    message-service:
+      address: 'static://message-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+    trip-service:
+      address: 'static://trip-service:9099' # Server Address
+      negotiation-type: plaintext
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
