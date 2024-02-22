@@ -1,10 +1,12 @@
 package com.ssafy.userservice.api.service;
 
+import com.ssafy.userservice.api.messanger.EventProducer;
 import com.ssafy.userservice.api.oauth2.exception.AuthNotFoundException;
 import com.ssafy.userservice.api.oauth2.exception.UserNotFoundException;
 import com.ssafy.userservice.api.oauth2.userinfo.KakaoUserInfo;
 import com.ssafy.userservice.api.oauth2.userinfo.NaverUserInfo;
 import com.ssafy.userservice.api.oauth2.userinfo.OAuth2UserInfo;
+import com.ssafy.userservice.api.request.UserDeleteRequest;
 import com.ssafy.userservice.db.entity.*;
 import com.ssafy.userservice.api.request.UserInfoRequest;
 import com.ssafy.userservice.db.entity.Auth;
@@ -29,6 +31,8 @@ public class UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final AuthRepository authRepository;
     private final RoleRepository roleRepository;
+
+    private final EventProducer eventProducer;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -95,6 +99,11 @@ public class UserService extends DefaultOAuth2UserService {
         }
         else{
             userRepository.deleteById(id);
+
+            eventProducer.request("user-delete",
+                    UserDeleteRequest.builder()
+                            .userId(UUID.fromString(id)).build()
+            );
             return ResponseEntity.ok().body("Delete successfully");
         }
     }

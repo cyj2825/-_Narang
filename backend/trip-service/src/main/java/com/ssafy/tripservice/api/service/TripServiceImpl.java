@@ -27,6 +27,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.*;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -464,29 +465,38 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
         탈퇴 회원 가입 파티 삭제
         한개씩만 되는거 문제. 나머지 데이터 다 사라지는거 문제 : 해결 !
      */
+    @KafkaListener(topics = {"user-delete"}, groupId = "narang-trip-1")
     @Override
-    public long eraseWithdrawalUser(UUID userId) {
+    public long eraseWithdrawalUser(String message) {
+        log.info(message);
 
-        Query query = new Query(
-                Criteria
-                        .where("participants")
-                        .elemMatch(
-                                Criteria.where("participantId")
-                                        .is(userId)));
+        try {
+            UUID userId = UUID.fromString(message);
 
-        System.out.println(mongoTemplate.find(query, Trip.class).size());
+            Query query = new Query(
+                    Criteria
+                            .where("participants")
+                            .elemMatch(
+                                    Criteria.where("participantId")
+                                            .is(userId)));
 
-        Update update = new Update().pull("participants", Query.query(Criteria.where("participantId").is(userId)));
+            System.out.println(mongoTemplate.find(query, Trip.class).size());
 
-        return mongoTemplate.updateMulti(query, update, Trip.class).getMatchedCount();
+            Update update = new Update().pull("participants", Query.query(Criteria.where("participantId").is(userId)));
+
+            return mongoTemplate.updateMulti(query, update, Trip.class).getMatchedCount();
+        }
+        catch (NoSuchElementException e) {
+            e.printStackTrace();
+            log.error("Kafka User-Trip Deletion Not Completed");
+        }
+        return -1;
     }
 
     @Override
     public void getTripById(org.narang.lib.TripGrpcRequest request, StreamObserver<org.narang.lib.TripGrpcResponse> responseObserver) {
         Optional<Trip> trip = tripRepository.findById(UUID.fromString(request.getTripId()));
 
-        log.info("REQUEST RECIVED >>>>> ");
-        log.info("REQUEST RESULT >>>>> ");
         if (trip.isPresent()) {
             log.info("REQUEST RESULT EXISTS ");
         }
@@ -535,81 +545,5 @@ public class TripServiceImpl extends NarangGrpc.NarangImplBase implements TripSe
         );
 
         return response.getResult();
-    }
-
-    @Override
-    public List<TripSimpleResponse> getAllTripIds() {
-        return tripRepository.findAll()
-                .stream().map(Trip::toTripSimpleResponse).toList();
-    }
-
-    @Override
-    public void putAllTripImgs() {
-        List<Trip> triplist = tripRepository.findAll();
-        int random = 0;
-
-        List<String> country_code_list = List.of (
-                "한국", "KR",
-                "일본", "JP",
-                "홍콩", "HK",
-                "대만", "TW",
-                "중국", "CN",
-                "몽골", "MN",
-                "미얀마", "MM",
-                "캄보디아", "KH",
-                "필리핀", "PH",
-                "말레이시아", "MY",
-                "인도네시아", "ID",
-                "태국", "TH",
-                "베트남", "VN",
-                "우즈베키스탄", "UZ",
-                "티베트", "TIB",
-                "아랍에미리트", "AE",
-                "몰디브", "MV",
-                "인도", "IN",
-                "사우디아라비아", "SA",
-                "스위스", "CH",
-                "프랑스", "FR",
-                "영국", "GB",
-                "이탈리아", "IT",
-                "포르투갈", "PT",
-                "스페인", "ES",
-                "독일", "DE",
-                "오스트리아", "AT",
-                "크로아티아", "HR",
-                "호주", "AU",
-                "뉴질랜드", "NZ",
-                "팔라우", "PW",
-                "이집트", "EG",
-                "나미비아", "NA",
-                "수단", "SD",
-                "미국", "US",
-                "멕시코", "MX",
-                "캐나다", "CA",
-                "브라질", "BR",
-                "아르헨티나", "AR",
-                "페루", "PE",
-                "우루과이", "UY",
-                "볼리비아", "BO");
-
-
-
-        for (Trip trip : triplist) {
-
-            Query query = new Query(Criteria.where("_id").is(trip.get_id()));
-
-            for (int i = 0; i < country_code_list.size(); i++) {
-                if (country_code_list.get(i).equals(trip.getCountry())) {
-                    Update update = new Update().set("tripImgUrl",
-                            "https://youngkimi-bucket-01.s3.ap-northeast-2.amazonaws.com/"
-                            +
-                            country_code_list.get(i + 1) + (++random % 2 + 1)
-                            +
-                            ".jpg"
-                    );
-                    mongoTemplate.updateFirst(query, update, Trip.class);
-                }
-            }
-        }
     }
 }

@@ -41,11 +41,7 @@ public interface TripService {
     public Page<TripPageResponse> getTripsIveBeen(TripQueryRequest tripQueryRequest);
     public Page<TripPageResponse> getTripsIveOwn(TripQueryRequest tripQueryRequest);
     public Page<TripPageResponse> getTripsIWant (TripQueryRequest tripQueryRequest);
-    public long eraseWithdrawalUser(UUID userId);
+    public long eraseWithdrawalUser(String message);
 
     public boolean rejectTripJoinRequest(UserRejectRequest request);
-
-    List<TripSimpleResponse> getAllTripIds();
-
-    void putAllTripImgs();
 }

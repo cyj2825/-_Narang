@@ -186,14 +186,6 @@ public class TripController {
         return ResponseEntity.ok(tripService.getBannerTrips(tripConcept));
     }
 
-    @DeleteMapping("/user")
-    public ResponseEntity<Long> deleteUserTrips (
-            @RequestParam("userId") UUID userId) {
-        System.out.println(userId);
-
-        return ResponseEntity.ok(tripService.eraseWithdrawalUser(userId));
-    }
-
     @Operation(summary = "나의 여행 조회 (기간)",
             description = "name = userId, pageNo, querySttDate(optional), queryEndDate(optional)",
             responses = {@ApiResponse(responseCode = "200", description = "User Get Trip Successfully")})
@@ -211,17 +203,6 @@ public class TripController {
     public ResponseEntity<Page<TripPageResponse>> getTripsIveOwn(
             @RequestBody TripQueryRequest tripQueryRequest) {
         return ResponseEntity.ok(tripService.getTripsIveOwn(tripQueryRequest));
-    }
-
-    @GetMapping("/allTripId")
-    public ResponseEntity<List<TripSimpleResponse>> getAllTripIds() {
-        return ResponseEntity.ok(tripService.getAllTripIds());
-    }
-
-    @PutMapping("/tripImgModify")
-    public ResponseEntity<Void> putTripsImg() {
-        tripService.putAllTripImgs();
-        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(TripNotFoundException.class)
